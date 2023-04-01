@@ -1,7 +1,7 @@
 # pokemon
 
 les dependaces:
-1 - le module Request
+1 - le module Requests
 2 - le module IO
 3 - le module PIL
 4 - le module Tkinter
