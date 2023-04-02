@@ -31,9 +31,7 @@ class Combat(Fichier):
         self.pockemone_player = TypePockemone(list_pockemone.get())
         self.pockemone_ordinateur = TypePockemone(random.choice(self.names_pockemone))
         
-        for widget in self.fenetre.winfo_children():
-            if str(widget) !=".!menu":
-                widget.destroy()
+        self.clean_fenetre()
         self.display()
     
     # fonction qui s'occupe de l'affichage
@@ -109,6 +107,10 @@ class Combat(Fichier):
                 x = 10
                 y += 40
         
+        if(not self.__est_vivant(self.pockemone_ordinateur) or not self.__est_vivant(self.pockemone_player)):
+            print("le gagnant est : ",self.get_name_winner())
+            print("le perdant est ",self.get_name_loser())
+        
     def menu_game(self):
         menu = tk.Menu(self.fenetre)
         menu.add_command(label="Accueil",command=self.run)
@@ -119,9 +121,7 @@ class Combat(Fichier):
     def run(self):
         
         self.fenetre.unbind_all('<Button>')
-        for widget in self.fenetre.winfo_children():
-            if str(widget) !=".!menu":
-                widget.destroy()
+        self.clean_fenetre()
         
         self.get_pockemon()
         canvas = tk.Canvas(self.fenetre,width=300,height=300)
@@ -144,33 +144,31 @@ class Combat(Fichier):
         
         if(type( event.widget) is tk.Button ):
             element_type = event.widget
+            
             self.pockemone_player.set_type_attaque(element_type.cget("text"))
+            self.pockemone_player.set_type_defence(element_type.cget("text"))
             
             self.pockemone_ordinateur.set_type_defence(random.choice(self.pockemone_ordinateur.get_type_names()))
+            self.pockemone_ordinateur.set_type_attaque(random.choice(self.pockemone_ordinateur.get_type_names()))
             
-            
-            # print(self.pockemone_player.get_type_attaque())
-            # print(self.pockemone_ordinateur.get_type_attaque())
-            self.duel(self.pockemone_player,self.pockemone_ordinateur)
-    # 
+            if self.get_name_winner() == False:       
+                self.duel(self.pockemone_player,self.pockemone_ordinateur)
+                self.duel(self.pockemone_ordinateur,self.pockemone_player)
+    
+    
     def __est_vivant(self,pockemone):
         if(pockemone.get_point_life() <= 0):
             return False
         else:
             return True
-        
-    def get_name_win(self,p1,p2):
-        
-        if(not self.est_vivant(p1)):
-            return p1.get_name()
-        elif(not self.est_vivant(p2)):
-            return p1.get_name
-        else:
-            print("la partie continue")
+    
+    def clean_fenetre(self):
+        for widget in self.fenetre.winfo_children():
+            if str(widget) !=".!menu":
+                widget.destroy()
     
     def duel(self, pockemone_one, pockemone_two):
         
-        vie_pock_one = pockemone_one.get_point_life()
         vie_pock_two = pockemone_two.get_point_life()
         
         type_attaque = pockemone_one.get_type_attaque()
@@ -180,15 +178,46 @@ class Combat(Fichier):
         
         info_type = self.get_data_files("db/types.json")
         
+        type_exist = False
+        
         for contenue in info_type :
            if(contenue["attack"] == type_attaque and contenue["defense"] == type_defence):
-               
-                vie_pock_one -= point_attaque * contenue["constant"]
-                if(self.__est_vivant(pockemone_one)):
-                    pockemone_one.set_point_life(vie_pock_one)
+                type_exist = True
+                vie_pock_two -= point_attaque * contenue["constant"]
+                    
+                if(vie_pock_two >= 0):
+                    pockemone_two.set_point_life(vie_pock_two)
                 else:
-                    print("le pockemone est mort")
-            
+                    vie_pock_two = 0
+                    pockemone_two.set_point_life(vie_pock_two)
+        
+        if(not type_exist):
+          
+            vie_pock_two -= point_attaque
+            if(vie_pock_two >=0):
+                pockemone_two.set_point_life(vie_pock_two)
+            else:
+                vie_pock_two = 0
+                pockemone_two.set_point_life(vie_pock_two)
+            self.clean_fenetre()
+            self.display()
+    
+    def get_name_winner(self):
+        if not self.__est_vivant(self.pockemone_ordinateur):
+            return self.pockemone_player.get_name()
+        elif not self.__est_vivant(self.pockemone_player):
+            return self.pockemone_ordinateur.get_name()
+        else:
+            return False
+        
+    def get_name_loser(self):
+        
+        if not self.__est_vivant(self.pockemone_ordinateur):
+            return self.pockemone_ordinateur.get_name()
+        elif not self.__est_vivant(self.pockemone_player):
+            return self.pockemone_player.get_name()
+        else:
+            return False
 # fentre 
 fenetre = tk.Tk()
 
