@@ -93,10 +93,10 @@ class Combat(Fichier):
         label_name_ordinateur = tk.Label(canvas_Element_ordinateur,text="Nom : {}".format(self.pockemone_ordinateur.get_name()),bg="#c2d4f6",font=('times new roman',14))
         label_name_ordinateur.place(x=10,y=35)
         
-        label_puissance_attak_ordinateur = tk.Label(canvas_Element_ordinateur,bg="#c2d4f6",text="Puissance d'attaque : {}".format(self.pockemone_ordinateur.get_puissance_attaque()),font=('times new roman',14))
+        label_puissance_attak_ordinateur = tk.Label(canvas_Element_ordinateur,bg="#c2d4f6",text="Attaque : {}".format(self.pockemone_ordinateur.get_puissance_attaque()),font=('times new roman',14))
         label_puissance_attak_ordinateur.place(x=10,y=60)
         
-        label_puissance_defence_ordinateur = tk.Label(canvas_Element_ordinateur,bg="#c2d4f6",text="Puissance de defence: {}".format(self.pockemone_ordinateur.get_defence()),font=('times new roman',14))
+        label_puissance_defence_ordinateur = tk.Label(canvas_Element_ordinateur,bg="#c2d4f6",text="Defence: {}".format(self.pockemone_ordinateur.get_defence()),font=('times new roman',14))
         label_puissance_defence_ordinateur.place(x = 10,y = 85)
         
         label_types_ordinateur = tk.Label(canvas_Element_ordinateur,bg="#c2d4f6",text="Types :",font=('times new roman',14))
